@@ -19,7 +19,17 @@
   > The next two attributes are the policy model (outputs the best distributions for choosing the right actions (each of them consisting in four numbers corresponding to torque applicable to two joints) to performed and the critic model (outputs state value of each given state). Then we create the optimizers that will update the parameters at the very end of training using the gradient computed with the backward() method.
   > ​        The following part of the code is about the learning process. The set of experiences (buffer) is split into batches randomly generated (line 102) at each epoch. Then we extract the sub-sets that we need (lines 106-110) to get our two losses, namely advantages (line 108) + old/new policies(lines 114, 115) for surrogate loss (line 122), and returns (line 109) + old/new values(lines 110,124) for critic loss (line 130). Finally, we need to compute the gradient of the loss functions through the backward method (that propagates the error of total_loss through the entire network and computes derivatives with respect to each parameter of the model). Notice that we can combine the losses (line 132) without risking any problem because our two models (policy and critic) don't share any common parameters (that allows us to use only one computational graph which have however to be retained for enabling the second back-propagation): that way each optimizer can update only its corresponding parameters without affecting the others when calling backward() on total_loss.   
 
+For my implementation, I chose two neural networks (policy and critic), both containing a single hidden layer with 512 neurons. Regarding the activation function, I chose ReLU (along with tanh as output gate). I also used normalized layers (batch normalization technique) to improve performance.
 
+I used the following hyper parameters:
+
+- Buffer size = 2048
+- Batch size = 64
+- Number of epochs = 10
+- Learning rate = 1e-3
+- Discount factor = 0.99
+- GAE lambda parameter = 0.95
+- PPO clipping parameter = 0.2
 
 ### Performance
 
